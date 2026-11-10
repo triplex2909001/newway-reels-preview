@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newway Logistics JSC — TikTok / Reels HTML Video Slides Engine (9:16 — 1080x1920)</title>
+  <title>Newway Logistics JSC — Template NW1: TikTok / Reels Video Slides Engine (9:16 — 1080x1920)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1454,7 +1454,7 @@
       <img src="https://lh3.googleusercontent.com/d/10vfJ75ckbYGGBNQBckMV6CvDLEPoPWLr" alt="Newway Logistics JSC" class="brand-logo-img" id="studio-logo-badge">
       <div class="studio-title-box">
         <h1>Newway Logistics JSC <span class="brand-handle-badge">@newwaylogisticsjsc</span></h1>
-        <p>TikTok / Reels Video Slides Template Engine • 44 Modular Variants • Slogan: "Your Logistics Partner" • Hotline: +84.225&nbsp;8832&nbsp;168</p>
+        <p>Template NW1 Engine • Presets: NW1B1 | NW1B2 | NW1B3 • 44 Modular Variants • Slogan: "Your Logistics Partner" • Hotline: +84.225&nbsp;8832&nbsp;168</p>
       </div>
     </div>
 
@@ -1462,12 +1462,12 @@
       <!-- Mobile Drawer Toggle -->
       <button id="mobile-drawer-toggle" class="btn-mobile-drawer" type="button">📋 Biến Thể (44)</button>
 
-      <!-- Animated Background Preset Switcher (Pinterest Suite) -->
+      <!-- Animated Background Preset Switcher (NW1 Presets: B1, B2, B3) -->
       <select id="bg-select" class="btn" style="background: rgba(0,24,36,0.85); border: 1px solid var(--aidev-teal); color: var(--aidev-teal); font-size:12px; font-weight:700;">
-        <option value="mesh" selected>🎬 Nền 1: Mesh Gradient (Pinterest)</option>
-        <option value="waves">🎬 Nền 2: Abstract Waves (Pinterest)</option>
-        <option value="particles">🎬 Nền 3: Geometric Glow (Pinterest)</option>
-        <option value="css">🎬 Nền 4: Cyber Grid CSS (Gốc)</option>
+        <option value="B1" selected>🎬 NW1B1: Nền 1 - Dark Mesh Gradient</option>
+        <option value="B2">🎬 NW1B2: Nền 2 - Abstract 3D Waves Flow</option>
+        <option value="B3">🎬 NW1B3: Nền 3 - Geometric Depth Glow</option>
+        <option value="css">🎬 NW1CSS: Nền 4 - Cyber Grid CSS (Gốc)</option>
       </select>
 
       <!-- Logo Variant Switcher -->
@@ -1538,7 +1538,7 @@
           <!-- @aidev.repo Dynamic Motion Video Background Layer -->
           <div class="aidev-video-bg" id="aidev-video-bg">
             <video id="bg-video-layer" autoplay loop muted playsinline preload="auto">
-              <source id="bg-video-src" src="assets/bg/bg_mesh_dark.mp4" type="video/mp4">
+              <source id="bg-video-src" src="backgrounds/B1_mesh_gradient.mp4" type="video/mp4">
             </video>
             <div class="video-bg-scrim" id="video-bg-scrim"></div>
             <div class="video-bg-gradient"></div>
@@ -2938,9 +2938,12 @@
 ];
 
     const LOGO_ASSETS = {
-  "full_light": "https://lh3.googleusercontent.com/d/1bAImXtd5I3LDCVGZdAbtc8gALUheCjWc",
-  "full_dark": "https://lh3.googleusercontent.com/d/10vfJ75ckbYGGBNQBckMV6CvDLEPoPWLr",
-  "symbol": "https://lh3.googleusercontent.com/d/1vS_ZVRxgKa0oi33KCo5T5CxTSDjrSL9R"
+  "full_light": "assets/logos/logo_full_light.png",
+  "full_dark": "assets/logos/logo_full_dark.png",
+  "symbol": "assets/logos/logo_symbol.png",
+  "full_light_cdn": "https://lh3.googleusercontent.com/d/1bAImXtd5I3LDCVGZdAbtc8gALUheCjWc",
+  "full_dark_cdn": "https://lh3.googleusercontent.com/d/10vfJ75ckbYGGBNQBckMV6CvDLEPoPWLr",
+  "symbol_cdn": "https://lh3.googleusercontent.com/d/1vS_ZVRxgKa0oi33KCo5T5CxTSDjrSL9R"
 };
 
     let currentIndex = 0;
@@ -3548,29 +3551,59 @@
     const bgOrbs = document.getElementById('video-bg-orbs');
 
     const BG_PRESETS = {
-      mesh: 'assets/bg/bg_mesh_dark.mp4',
-      waves: 'assets/bg/bg_waves_flow.mp4',
-      particles: 'assets/bg/bg_particles_glow.mp4'
+      B1: 'backgrounds/B1_mesh_gradient.mp4',
+      B2: 'backgrounds/B2_waves_flow.mp4',
+      B3: 'backgrounds/B3_geometric_glow.mp4',
+      mesh: 'backgrounds/B1_mesh_gradient.mp4',
+      waves: 'backgrounds/B2_waves_flow.mp4',
+      particles: 'backgrounds/B3_geometric_glow.mp4'
     };
+
+    function setBackgroundPreset(val) {
+      if (!bgVideo || !bgVideoSrc) return;
+      if (val === 'css') {
+        bgVideo.style.opacity = '0';
+        setTimeout(() => { try { bgVideo.pause(); } catch(e){} }, 300);
+        if (bgScrim) bgScrim.style.display = 'none';
+        if (bgOrbs) bgOrbs.style.display = 'block';
+      } else if (BG_PRESETS[val]) {
+        bgVideoSrc.src = BG_PRESETS[val];
+        bgVideo.load();
+        bgVideo.play().catch(() => {});
+        bgVideo.style.opacity = '0.88';
+        if (bgScrim) bgScrim.style.display = 'block';
+        if (bgOrbs) bgOrbs.style.display = 'none';
+      }
+    }
 
     if (bgSelect && bgVideo && bgVideoSrc) {
       bgSelect.addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (val === 'css') {
-          bgVideo.style.opacity = '0';
-          setTimeout(() => { try { bgVideo.pause(); } catch(e){} }, 300);
-          if (bgScrim) bgScrim.style.display = 'none';
-          if (bgOrbs) bgOrbs.style.display = 'block';
-        } else if (BG_PRESETS[val]) {
-          bgVideoSrc.src = BG_PRESETS[val];
-          bgVideo.load();
-          bgVideo.play().catch(() => {});
-          bgVideo.style.opacity = '0.88';
-          if (bgScrim) bgScrim.style.display = 'block';
-          if (bgOrbs) bgOrbs.style.display = 'none';
-        }
+        setBackgroundPreset(e.target.value);
       });
     }
+
+    // Auto-detect preset from URL Query: ?preset=NW1B2 or ?code=NW1B2 or ?bg=B2
+    (function checkUrlPreset() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const code = (params.get('preset') || params.get('code') || params.get('template') || '').toUpperCase();
+        const bg = (params.get('bg') || '').toLowerCase();
+        let target = '';
+
+        if (code === 'NW1B1' || bg === 'b1' || bg === '1' || bg === 'mesh') target = 'B1';
+        else if (code === 'NW1B2' || bg === 'b2' || bg === '2' || bg === 'waves') target = 'B2';
+        else if (code === 'NW1B3' || bg === 'b3' || bg === '3' || bg === 'particles') target = 'B3';
+        else if (code === 'NW1CSS' || bg === 'css' || bg === '4') target = 'css';
+
+        if (target && bgSelect) {
+          bgSelect.value = target;
+          setBackgroundPreset(target);
+          console.log('[NW1 Engine] Activated Preset: NW1' + target);
+        }
+      } catch (err) {
+        console.warn('[NW1 Engine] URL preset parse error:', err);
+      }
+    })();
 
     // Speed Selector
     document.getElementById('playback-speed').addEventListener('change', (e) => {
