@@ -389,14 +389,34 @@
       pointer-events: none;
       z-index: 1;
     }
+    #bg-video-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      opacity: 0.88;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .video-bg-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0, 16, 24, 0.45) 0%, rgba(0, 16, 24, 0.82) 100%);
+      pointer-events: none;
+    }
     .video-bg-gradient {
       position: absolute;
       inset: 0;
+      z-index: 3;
       background: linear-gradient(180deg, #001018 0%, #001824 35%, #002830 75%, #001018 100%);
     }
     .video-bg-mesh {
       position: absolute;
       inset: 0;
+      z-index: 3;
       background:
         radial-gradient(ellipse 80% 50% at 50% 0%, rgba(45, 212, 191, 0.2), transparent 70%),
         radial-gradient(circle at 12% 80%, rgba(6, 182, 212, 0.18), transparent 55%),
@@ -405,6 +425,7 @@
     .video-bg-grid {
       position: absolute;
       inset: 0;
+      z-index: 3;
       background-size: 54px 54px;
       background-image:
         linear-gradient(to right, rgba(45, 212, 191, 0.04) 1px, transparent 1px),
@@ -413,6 +434,7 @@
     .video-bg-orbs {
       position: absolute;
       inset: 0;
+      z-index: 3;
     }
     .glow-orb {
       position: absolute;
@@ -456,8 +478,11 @@
       white-space: nowrap !important;
       word-break: keep-all !important;
       overflow-wrap: normal !important;
+      hyphens: none !important;
+      -webkit-hyphens: none !important;
       display: inline-block;
       font-variant-numeric: tabular-nums;
+      max-width: 100%;
     }
 
     .cta-contacts-subline {
@@ -938,6 +963,21 @@
       letter-spacing: -0.02em;
       color: #fff;
       font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      hyphens: none !important;
+      -webkit-hyphens: none !important;
+      display: block;
+      max-width: 100%;
+    }
+
+    .metric-val.metric-contact-val {
+      font-family: 'JetBrains Mono', 'Inter', monospace;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--nwl-cyan);
     }
 
     .metric-lbl {
@@ -1414,13 +1454,21 @@
       <img src="https://lh3.googleusercontent.com/d/10vfJ75ckbYGGBNQBckMV6CvDLEPoPWLr" alt="Newway Logistics JSC" class="brand-logo-img" id="studio-logo-badge">
       <div class="studio-title-box">
         <h1>Newway Logistics JSC <span class="brand-handle-badge">@newwaylogisticsjsc</span></h1>
-        <p>TikTok / Reels Video Slides Template Engine • 44 Modular Variants • Slogan: "Your Logistics Partner" • Hotline: +84.225 8832 168</p>
+        <p>TikTok / Reels Video Slides Template Engine • 44 Modular Variants • Slogan: "Your Logistics Partner" • Hotline: +84.225&nbsp;8832&nbsp;168</p>
       </div>
     </div>
 
     <div class="studio-actions">
       <!-- Mobile Drawer Toggle -->
       <button id="mobile-drawer-toggle" class="btn-mobile-drawer" type="button">📋 Biến Thể (44)</button>
+
+      <!-- Animated Background Preset Switcher (Pinterest Suite) -->
+      <select id="bg-select" class="btn" style="background: rgba(0,24,36,0.85); border: 1px solid var(--aidev-teal); color: var(--aidev-teal); font-size:12px; font-weight:700;">
+        <option value="mesh" selected>🎬 Nền 1: Mesh Gradient (Pinterest)</option>
+        <option value="waves">🎬 Nền 2: Abstract Waves (Pinterest)</option>
+        <option value="particles">🎬 Nền 3: Geometric Glow (Pinterest)</option>
+        <option value="css">🎬 Nền 4: Cyber Grid CSS (Gốc)</option>
+      </select>
 
       <!-- Logo Variant Switcher -->
       <select id="logo-select" class="btn" style="background: rgba(0,24,36,0.8); border: 1px solid var(--aidev-card-border); color: #fff; font-size:12px;">
@@ -1488,11 +1536,15 @@
       <div class="viewport-scaler" id="viewport-scaler">
         <div id="phone-canvas">
           <!-- @aidev.repo Dynamic Motion Video Background Layer -->
-          <div class="aidev-video-bg">
+          <div class="aidev-video-bg" id="aidev-video-bg">
+            <video id="bg-video-layer" autoplay loop muted playsinline preload="auto">
+              <source id="bg-video-src" src="assets/bg/bg_mesh_dark.mp4" type="video/mp4">
+            </video>
+            <div class="video-bg-scrim" id="video-bg-scrim"></div>
             <div class="video-bg-gradient"></div>
             <div class="video-bg-mesh"></div>
             <div class="video-bg-grid"></div>
-            <div class="video-bg-orbs">
+            <div class="video-bg-orbs" id="video-bg-orbs" style="display:none;">
               <div class="glow-orb orb-1"></div>
               <div class="glow-orb orb-2"></div>
               <div class="glow-orb orb-3"></div>
@@ -2684,11 +2736,11 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline Newway"
       },
       {
-        "val": "info@newway-logistics.com",
+        "val": "info@newway&#8209;logistics.com",
         "lbl": "Email liên hệ"
       }
     ],
@@ -2720,7 +2772,7 @@
         "lbl": "Website chính thức"
       },
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline hỗ trợ"
       }
     ],
@@ -2743,11 +2795,11 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline hỗ trợ"
       },
       {
-        "val": "info@newway-logistics.com",
+        "val": "info@newway&#8209;logistics.com",
         "lbl": "Email liên hệ"
       }
     ],
@@ -2773,7 +2825,7 @@
         "lbl": "Website chính thức"
       },
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline tư vấn"
       }
     ],
@@ -2795,11 +2847,11 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline liên hệ"
       },
       {
-        "val": "info@newway-logistics.com",
+        "val": "info@newway&#8209;logistics.com",
         "lbl": "Email hợp tác"
       }
     ],
@@ -2821,7 +2873,7 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline hỗ trợ"
       },
       {
@@ -2847,11 +2899,11 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline liên hệ"
       },
       {
-        "val": "info@newway-logistics.com",
+        "val": "info@newway&#8209;logistics.com",
         "lbl": "Email hỗ trợ"
       }
     ],
@@ -2873,11 +2925,11 @@
     ],
     "metrics": [
       {
-        "val": "+84.225 8832 168",
+        "val": "+84.225&nbsp;8832&nbsp;168",
         "lbl": "Hotline Newway"
       },
       {
-        "val": "info@newway-logistics.com",
+        "val": "info@newway&#8209;logistics.com",
         "lbl": "Email liên hệ"
       }
     ],
@@ -2951,10 +3003,10 @@
                 <p style="font-size:20px; color:rgba(255,255,255,0.92); max-width:640px; margin:0 auto; line-height:1.5;">Nếu bạn cần đơn vị logistics chuyên nghiệp, hãy liên hệ với chúng tôi</p>
                 <div class="cta-pill-button">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>Hotline: <span class="no-break-nowrap">+84.225 8832 168</span></span>
+                  <span>Hotline: <span class="no-break-nowrap">+84.225&nbsp;8832&nbsp;168</span></span>
                 </div>
                 <div class="cta-contacts-subline">
-                  <span class="no-break-nowrap">✉️ info@newway-logistics.com</span>
+                  <span class="no-break-nowrap">✉️ info@newway&#8209;logistics.com</span>
                   <span class="cta-sep">•</span>
                   <span class="no-break-nowrap">🌐 newway-logistics.com</span>
                 </div>
@@ -3004,9 +3056,9 @@
                   newway-logistics.com
                 </div>
                 <div class="cta-contacts-subline" style="margin-top:6px;">
-                  <span class="no-break-nowrap">📞 +84.225 8832 168</span>
+                  <span class="no-break-nowrap">📞 +84.225&nbsp;8832&nbsp;168</span>
                   <span class="cta-sep">•</span>
-                  <span class="no-break-nowrap">✉️ info@newway-logistics.com</span>
+                  <span class="no-break-nowrap">✉️ info@newway&#8209;logistics.com</span>
                 </div>
               </div>
             `;
@@ -3017,14 +3069,14 @@
                   <img src="${s.images[0].url}" alt="${s.images[0].label}" class="round-logo-emblem" style="width:155px; height:155px;">
                 </div>
                 <div class="cta-split-contacts">
-                  <div class="cta-split-item" style="min-width:320px;">
+                  <div class="cta-split-item">
                     <div class="cta-split-label">📞 Hotline</div>
-                    <div class="cta-split-val no-break-nowrap" style="font-size: clamp(16px, 2.2cqi, 20px);">+84.225 8832 168</div>
+                    <div class="cta-split-val no-break-nowrap" style="font-size: clamp(16px, 2.2cqi, 20px);">+84.225&nbsp;8832&nbsp;168</div>
                     <div style="font-size:13px; color:var(--aidev-text-muted); margin-top:4px;">Tư vấn dịch vụ trực tiếp</div>
                   </div>
-                  <div class="cta-split-item" style="min-width:320px;">
+                  <div class="cta-split-item">
                     <div class="cta-split-label">✉️ Email</div>
-                    <div class="cta-split-val no-break-nowrap" style="font-size: clamp(14px, 2.0cqi, 18px);">info@newway-logistics.com</div>
+                    <div class="cta-split-val no-break-nowrap" style="font-size: clamp(14px, 2.0cqi, 18px);">info@newway&#8209;logistics.com</div>
                     <div style="font-size:13px; color:var(--aidev-text-muted); margin-top:4px;">Tiếp nhận yêu cầu hợp tác</div>
                   </div>
                 </div>
@@ -3046,10 +3098,10 @@
                 </div>
                 <div class="cta-minimal-divider"></div>
                 <div style="font-size:22px; font-weight:700; color:var(--aidev-teal); letter-spacing:0.04em;">
-                  <span class="no-break-nowrap">+84.225 8832 168</span>
+                  <span class="no-break-nowrap">+84.225&nbsp;8832&nbsp;168</span>
                 </div>
                 <p class="cta-contacts-subline" style="margin-top:12px; max-width:580px;">
-                  <span class="no-break-nowrap">info@newway-logistics.com</span>
+                  <span class="no-break-nowrap">info@newway&#8209;logistics.com</span>
                   <span class="cta-sep">•</span>
                   <span class="no-break-nowrap">newway-logistics.com</span>
                 </p>
@@ -3068,10 +3120,10 @@
                   SẴN SÀNG TƯ VẤN & HỖ TRỢ
                 </div>
                 <div style="font-size:24px; font-weight:800; color:#fff; margin-top:4px;">
-                  Hotline: <span class="no-break-nowrap">+84.225 8832 168</span>
+                  Hotline: <span class="no-break-nowrap">+84.225&nbsp;8832&nbsp;168</span>
                 </div>
                 <div class="cta-pill-button" style="margin-top:16px;">
-                  <span class="no-break-nowrap">info@newway-logistics.com</span>
+                  <span class="no-break-nowrap">info@newway&#8209;logistics.com</span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </div>
               </div>
@@ -3090,8 +3142,8 @@
                 </div>
                 <div class="cta-minimal-divider" style="margin:16px auto;"></div>
                 <div class="cta-contacts-subline" style="flex-direction:column; gap:6px;">
-                  <div>Hotline: <span class="no-break-nowrap" style="color:var(--aidev-teal); font-weight:700;">+84.225 8832 168</span></div>
-                  <div>Email: <span class="no-break-nowrap" style="color:var(--aidev-gold); font-weight:700;">info@newway-logistics.com</span></div>
+                  <div>Hotline: <span class="no-break-nowrap" style="color:var(--aidev-teal); font-weight:700;">+84.225&nbsp;8832&nbsp;168</span></div>
+                  <div>Email: <span class="no-break-nowrap" style="color:var(--aidev-gold); font-weight:700;">info@newway&#8209;logistics.com</span></div>
                 </div>
                 <div class="cta-badges-row" style="margin-top:16px;">
                   <span class="cta-badge-pill">Uy tín</span>
@@ -3145,12 +3197,24 @@
         if (s.metrics && s.metrics.length > 0) {
           metricsHtml = `
             <div class="slide-metrics-row anim-stagger-3">
-              ${s.metrics.map((m, i) => `
-                <div class="metric-card ${i === 0 ? 'accent' : ''}">
-                  <span class="metric-val">${m.val}</span>
-                  <span class="metric-lbl">${m.lbl}</span>
-                </div>
-              `).join('')}
+              ${s.metrics.map((m, i) => {
+                const str = String(m.val);
+                const isContact = str.includes('@') || str.includes('+84') || str.includes('8832') || str.includes('.com');
+                const safeVal = str.replace(/ /g, '&nbsp;').replace(/-/g, '&#8209;');
+                let fontStyle = '';
+                if (isContact) {
+                  const len = str.length;
+                  if (len > 22) fontStyle = 'font-size: clamp(12px, 1.8cqi, 17px) !important;';
+                  else if (len > 14) fontStyle = 'font-size: clamp(14px, 2.2cqi, 22px) !important;';
+                  else fontStyle = 'font-size: clamp(16px, 2.6cqi, 26px) !important;';
+                }
+                return `
+                  <div class="metric-card ${i === 0 ? 'accent' : ''}">
+                    <span class="metric-val ${isContact ? 'metric-contact-val' : ''} no-break-nowrap" style="${fontStyle}">${safeVal}</span>
+                    <span class="metric-lbl">${m.lbl}</span>
+                  </div>
+                `;
+              }).join('')}
             </div>
           `;
         }
@@ -3472,6 +3536,38 @@
         } else if (val === "symbol") {
           if (studioLogoBadge) studioLogoBadge.src = LOGO_ASSETS.symbol;
           if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.symbol;
+        }
+      });
+    }
+
+    // Animated Background Selector (Pinterest Suite)
+    const bgSelect = document.getElementById('bg-select');
+    const bgVideo = document.getElementById('bg-video-layer');
+    const bgVideoSrc = document.getElementById('bg-video-src');
+    const bgScrim = document.getElementById('video-bg-scrim');
+    const bgOrbs = document.getElementById('video-bg-orbs');
+
+    const BG_PRESETS = {
+      mesh: 'assets/bg/bg_mesh_dark.mp4',
+      waves: 'assets/bg/bg_waves_flow.mp4',
+      particles: 'assets/bg/bg_particles_glow.mp4'
+    };
+
+    if (bgSelect && bgVideo && bgVideoSrc) {
+      bgSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val === 'css') {
+          bgVideo.style.opacity = '0';
+          setTimeout(() => { try { bgVideo.pause(); } catch(e){} }, 300);
+          if (bgScrim) bgScrim.style.display = 'none';
+          if (bgOrbs) bgOrbs.style.display = 'block';
+        } else if (BG_PRESETS[val]) {
+          bgVideoSrc.src = BG_PRESETS[val];
+          bgVideo.load();
+          bgVideo.play().catch(() => {});
+          bgVideo.style.opacity = '0.88';
+          if (bgScrim) bgScrim.style.display = 'block';
+          if (bgOrbs) bgOrbs.style.display = 'none';
         }
       });
     }
