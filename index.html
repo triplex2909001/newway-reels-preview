@@ -1321,6 +1321,89 @@
       justify-content: flex-end;
       gap: 12px;
     }
+
+    /* ==========================================================================
+       RESPONSIVE & MOBILE LAYOUT SUPPORT (< 900px)
+       ========================================================================== */
+    .btn-mobile-drawer {
+      display: none;
+      background: rgba(0, 175, 239, 0.2);
+      border: 1px solid var(--nwl-cyan);
+      color: var(--nwl-cyan);
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .btn-mobile-drawer {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+      }
+      .studio-bar {
+        height: auto !important;
+        min-height: 52px;
+        padding: 8px 12px !important;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .brand-logo-img {
+        height: 26px !important;
+      }
+      .studio-title-box h1 {
+        font-size: 13px !important;
+      }
+      .studio-title-box p {
+        display: none !important;
+      }
+      #transition-select,
+      #playback-speed,
+      #open-json-btn,
+      #toggle-safe-zone,
+      #logo-select,
+      #fit-viewport-btn {
+        display: none !important;
+      }
+      .studio-workspace {
+        position: relative;
+        height: calc(100dvh - 54px - 62px) !important;
+        overflow: hidden;
+      }
+      .variants-drawer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 99;
+        display: none;
+        background: rgba(5, 11, 20, 0.98);
+        backdrop-filter: blur(24px);
+      }
+      .variants-drawer.mobile-open {
+        display: flex !important;
+      }
+      .studio-stage {
+        padding: 6px !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .viewport-scaler {
+        border-radius: 20px !important;
+        border-width: 4px !important;
+      }
+      .studio-scrubber {
+        height: 62px !important;
+        padding: 0 10px !important;
+      }
+      .scrubber-timer {
+        font-size: 11px !important;
+      }
+      .timeline-meta-row span:last-child {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1336,6 +1419,9 @@
     </div>
 
     <div class="studio-actions">
+      <!-- Mobile Drawer Toggle -->
+      <button id="mobile-drawer-toggle" class="btn-mobile-drawer" type="button">📋 Biến Thể (44)</button>
+
       <!-- Logo Variant Switcher -->
       <select id="logo-select" class="btn" style="background: rgba(0,24,36,0.8); border: 1px solid var(--aidev-card-border); color: #fff; font-size:12px;">
         <option value="light" selected>Logo Đầy Đủ (Bản Màu - Chuẩn)</option>
@@ -3189,6 +3275,13 @@
         }
       });
 
+      // Auto-close mobile drawer on selection
+      if (window.innerWidth <= 900 && variantsDrawer && variantsDrawer.classList.contains("mobile-open")) {
+        variantsDrawer.classList.remove("mobile-open");
+        if (mobileDrawerToggle) mobileDrawerToggle.textContent = "📋 Biến Thể (44)";
+        setTimeout(autoFitCanvas, 60);
+      }
+
       // Update Timer & Meta
       updateTimer();
 
@@ -3265,18 +3358,57 @@
     // Auto-fit 9:16 Phone Scaler to Viewport
     function autoFitCanvas() {
       const stageRect = studioStage.getBoundingClientRect();
-      const padding = 40;
-      const availWidth = stageRect.width - padding * 2;
-      const availHeight = stageRect.height - padding * 2;
+      const isMobile = window.innerWidth <= 900;
+      const padding = isMobile ? 8 : 40;
+      const availWidth = Math.max(80, stageRect.width - padding * 2);
+      const availHeight = Math.max(80, stageRect.height - padding * 2);
 
       const scaleW = availWidth / 1080;
       const scaleH = availHeight / 1920;
-      const scale = Math.min(scaleW, scaleH, 0.48); // Optimal crisp scale
+      const maxScale = isMobile ? 0.95 : 0.48;
+      const scale = Math.min(scaleW, scaleH, maxScale);
 
-      viewportScaler.style.width = `${1080 * scale}px`;
-      viewportScaler.style.height = `${1920 * scale}px`;
+      viewportScaler.style.width = `${Math.floor(1080 * scale)}px`;
+      viewportScaler.style.height = `${Math.floor(1920 * scale)}px`;
       phoneCanvas.style.transform = `scale(${scale})`;
     }
+
+    // Mobile Drawer Toggle Handler
+    const mobileDrawerToggle = document.getElementById("mobile-drawer-toggle");
+    const variantsDrawer = document.querySelector(".variants-drawer");
+    if (mobileDrawerToggle && variantsDrawer) {
+      mobileDrawerToggle.addEventListener("click", () => {
+        const isOpen = variantsDrawer.classList.toggle("mobile-open");
+        mobileDrawerToggle.textContent = isOpen ? "✕ Đóng Danh Sách" : "📋 Biến Thể (44)";
+        if (!isOpen) setTimeout(autoFitCanvas, 60);
+      });
+    }
+
+    // Touch Swipe Gestures for Mobile (TikTok / Reels Style)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    viewportScaler.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    viewportScaler.addEventListener("touchend", (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < -40) goToSlide(currentIndex + 1);
+        else if (diffX > 40) goToSlide(currentIndex - 1);
+      } else {
+        if (diffY < -50) goToSlide(currentIndex + 1);
+        else if (diffY > 50) goToSlide(currentIndex - 1);
+      }
+    }, { passive: true });
+
+    // Tap Phone Screen to Play/Pause
+    viewportScaler.addEventListener("click", (e) => {
+      if (e.target.closest(".tt-right-sidebar") || e.target.closest("button") || e.target.closest("a")) return;
+      togglePlay();
+    });
 
     // Event Listeners
     playPauseBtn.addEventListener('click', togglePlay);
@@ -3323,19 +3455,26 @@
     });
 
     // Logo Switcher
-    // Initialize with full_light as requested\n    watermarkIcon.src = LOGO_ASSETS.full_light;\n    studioLogoBadge.src = LOGO_ASSETS.full_light;\n    logoSelect.value = 'light';\n\n    logoSelect.addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val === 'light') {
-        studioLogoBadge.src = LOGO_ASSETS.full_light;
-        if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.full_light;
-      } else if (val === 'dark') {
-        studioLogoBadge.src = LOGO_ASSETS.full_dark;
-        if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.full_dark;
-      } else if (val === 'symbol') {
-        studioLogoBadge.src = LOGO_ASSETS.symbol;
-        if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.symbol;
-      }
-    });
+    // Initialize with full_light as requested
+    if (typeof watermarkIcon !== "undefined" && watermarkIcon) watermarkIcon.src = LOGO_ASSETS.full_light;
+    if (typeof studioLogoBadge !== "undefined" && studioLogoBadge) studioLogoBadge.src = LOGO_ASSETS.full_light;
+    const logoSelectEl = document.getElementById("logo-select");
+    if (logoSelectEl) {
+      logoSelectEl.value = "light";
+      logoSelectEl.addEventListener("change", (e) => {
+        const val = e.target.value;
+        if (val === "light") {
+          if (studioLogoBadge) studioLogoBadge.src = LOGO_ASSETS.full_light;
+          if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.full_light;
+        } else if (val === "dark") {
+          if (studioLogoBadge) studioLogoBadge.src = LOGO_ASSETS.full_dark;
+          if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.full_dark;
+        } else if (val === "symbol") {
+          if (studioLogoBadge) studioLogoBadge.src = LOGO_ASSETS.symbol;
+          if (watermarkIcon) watermarkIcon.src = LOGO_ASSETS.symbol;
+        }
+      });
+    }
 
     // Speed Selector
     document.getElementById('playback-speed').addEventListener('change', (e) => {
